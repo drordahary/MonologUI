@@ -11,16 +11,16 @@ export default function ConfigSize(props) {
     const [errorText, setErrorText] = useState('');
 
     function sizeChanged(e) {
-        if (e.target.value < min || e.target.value > max || isNaN(e.target.value) || e.target.value === '')
+        if (props.isBuffer) {
+            configs.bufferSize = e.target.value;
+        } else {
+            configs.portOffset = e.target.value;
+        } if (e.target.value < min || e.target.value > max || isNaN(e.target.value) || e.target.value === '') {
             setErrorText('Invalid Input');
-        else {
+            configs.portOffset = e.target.value;
+        } else {
             setErrorText('');
-            if (props.isBuffer) {
-                configs.bufferSize = e.target.value;
-            } else {
-                configs.portOffset = e.target.value;
-            } changeConfigs(configs);
-        }
+        } changeConfigs(configs);
     }
 
     return (

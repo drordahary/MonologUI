@@ -8,17 +8,15 @@ export default function ConfigIP(props) {
     const [errorText, setErrorText] = useState('');
 
     function validateIP(e) {
-        if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(e.target.value)) {
+        if (props.isSrc) {
+            config.srcIP = e.target.value;
+        } else {
+            config.dstIP = e.target.value;
+        } if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(e.target.value)) {
             setErrorText('');
-            if (props.isSrc) {
-                config.srcIP = e.target.value;
-
-            } else {
-                config.dstIP = e.target.value;
-            } changeConfigs(config);
         } else {
             setErrorText('Invalid IP');
-        }
+        } changeConfigs(config);
     }
 
     return (

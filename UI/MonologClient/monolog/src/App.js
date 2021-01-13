@@ -13,7 +13,8 @@ function App() {
     portOffset: 50000,
     portsPerChannel: 10,
     bufferSize: 512,
-    timesToSend: 1
+    timesToSend: 1,
+    channels: []
   };
 
   const [configs, setConfigs] = useState(defaultConfigurations);

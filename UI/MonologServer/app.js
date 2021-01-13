@@ -1,7 +1,9 @@
 const express = require("express");
 const http = require("http");
 const redis = require("./redis");
+const validation = require("./validate");
 
+const validate = new validation();
 const redisClient = new redis(3);
 
 const port = 4001;
@@ -23,7 +25,12 @@ socketIo.on("connection", (socket) => {
     console.log("New client connected");
 
     socket.on("configuration", (configs) => {
-        handleRedis(configs);
+        errors = validate.validateConfigs(configs);
+        if (Object.keys(errors).length === 0) {
+            handleRedis(configs);
+        } else {
+            socket.emit("errors", errors);
+        }
     });
 
     socket.on("disconnect", () => {
@@ -32,9 +39,15 @@ socketIo.on("connection", (socket) => {
 });
 
 function handleRedis(jsonObject) {
-    for(let key in jsonObject) {
-        redisClient.updateRedis(key, jsonObject[key]);
+    let isList = false;
+    for (let key in jsonObject) {
+        isList = (isArray(jsonObject[key])) ? true : false;
+        redisClient.updateRedis(key, jsonObject[key], isList);
     }
+}
+
+function isArray(currentObject) {
+    return Object.prototype.toString.call(currentObject) === '[object Array]';
 }
 
 server.listen(port, () => console.log(`Listening on port ${port}`));

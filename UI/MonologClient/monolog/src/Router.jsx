@@ -1,5 +1,6 @@
 import React from 'react';
 import Config from './Configuration';
+import Monitor from './Monitoring';
 import Button from './Button';
 import './Router.css';
 
@@ -23,7 +24,7 @@ function MyRouter(props) {
                 </Button>
 
                 <Button variant="contained" color="primary">
-                    <Link to="/prog">Progression</Link>
+                    <Link to="/monitor">Monitoring</Link>
                 </Button>
 
                 <hr width="500" />
@@ -34,7 +35,9 @@ function MyRouter(props) {
                     <Route path="/config">
                         <Config socket={props.socket} />
                     </Route>
-                    <Route path="/progression"></Route>
+                    <Route path="/monitor">
+                        <Monitor socket={props.socket} />
+                    </Route>
                 </Switch>
             </div>
         </Router>

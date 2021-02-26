@@ -2,9 +2,12 @@ const express = require("express");
 const http = require("http");
 const redis = require("./redis");
 const validation = require("./validate");
+const service = require("./service");
 
 const validate = new validation();
-const redisClient = new redis(3);
+const redisClientTX = new redis(2);
+const redisClientRX = new redis(3);
+const serviceHandler = new service();
 
 const port = 4001;
 const index = require("./routes/index");
@@ -36,13 +39,24 @@ socketIo.on("connection", (socket) => {
     socket.on("disconnect", () => {
         console.log("Client disconnected");
     });
+
+    socket.on("startService", (option) => {
+        serviceHandler.setOption(option);
+        serviceHandler.startService();
+    });
+
+    socket.on("stopService", (option) => {
+        serviceHandler.setOption(option);
+        serviceHandler.stopService();
+    })
 });
 
 function handleRedis(jsonObject) {
     let isList = false;
     for (let key in jsonObject) {
         isList = (isArray(jsonObject[key])) ? true : false;
-        redisClient.updateRedis(key, jsonObject[key], isList);
+        redisClientTX.updateRedis(key, jsonObject[key], isList);
+        redisClientRX.updateRedis(key, jsonObject[key], isList);
     }
 }
 
